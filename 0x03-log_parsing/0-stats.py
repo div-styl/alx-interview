@@ -1,49 +1,40 @@
 #!/usr/bin/python3
 """
-This script reads stdin line by line and computes metrics
+log parsing
 """
+
 import sys
 
+if __name__ == "__main__":
+    filesize, cnt = 0, 0
+    codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
+    states = {k: 0 for k in codes}
 
-def print_stats(code, filesize):
-    """Prints statistics"""
-    print("file size: {}".format(filesize))
-    for k, val, in sorted(code.items()):
-        if val != 0:
-            print("{}: {}".format(k, val))
+    def print_states(states: dict, file_size: int) -> None:
+        """print states"""
+        print("File size: {:d}".format(file_size))
+        for k, v in sorted(states.items()):
+            if v:
+                print("{}: {}".format(k, v))
 
+    try:
+        for line in sys.stdin:
+            cnt += 1
+            data = line.split()
+            try:
+                status_code = data[-2]
+                if status_code in states:
+                    states[status_code] += 1
+            except BaseException:
+                pass
+            try:
+                filesize += int(data[-1])
+            except BaseException:
+                pass
+            if cnt % 10 == 0:
+                print_states(states, filesize)
+        print_states(states, filesize)
 
-file_size = 0
-code = 0
-count_lines = 0
-codes = {
-    "200": 0,
-    "301": 0,
-    "400": 0,
-    "401": 0,
-    "403": 0,
-    "404": 0,
-    "405": 0,
-    "500": 0
-    }
-
-try:
-    for line in sys.stdin:
-        parese_lines = line.split()
-        parese_lines = parese_lines[::-1]
-
-        if len(parese_lines) > 2:
-            count_lines += 1
-
-            if count_lines <= 10:
-                file_size += int(parese_lines[0])
-                code = parese_lines[1]
-
-                if (code in codes.keys()):
-                    codes[code] += 1
-            if (count_lines == 10):
-                print_stats(codes, file_size)
-                count_lines = 0
-
-finally:
-    print_stats(codes, file_size)
+    except KeyboardInterrupt:
+        print_states(states, filesize)
+        raise
