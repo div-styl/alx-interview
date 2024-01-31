@@ -4,6 +4,7 @@ method that determines if a given data set
 represents a valid UTF-8 encoding
 """
 
+
 def validUTF8(data):
     """
     method that determines if a given data set
@@ -20,8 +21,8 @@ def validUTF8(data):
                 mask = mask >> 1
             if expected_continuation == 0:
                 continue
-            if expected_continuation == 1 or\
-                  expected_continuation > 4:
+            if expected_continuation == 1 or \
+                    expected_continuation > 4:
                 return False
         else:
             if not (value & UTF8_BIT_1 and not (value & UTF8_BIT_2)):
