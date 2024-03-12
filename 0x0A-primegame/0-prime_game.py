@@ -4,6 +4,7 @@
     define function
 """
 
+
 def primes(n):
     """ returns the list of prime numbers """
     prime = []
